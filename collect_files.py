@@ -2,7 +2,7 @@ import argparse, os, shutil
 from pathlib import Path
 
 p = argparse.ArgumentParser()
-p.add_argument("input_dir", type=Path)
+p.add_argument("input_dir",  type=Path)
 p.add_argument("output_dir", type=Path)
 p.add_argument("--max_depth", type=int)
 args = p.parse_args()
@@ -21,10 +21,12 @@ for root, dirs, files in os.walk(src):
         if args.max_depth is None:
             target_subdirs = ()
         else:
-            if len(dirs_only) <= args.max_depth:
+            L = len(dirs_only)
+            if L + 1 <= args.max_depth:
                 target_subdirs = tuple(dirs_only)
             else:
-                target_subdirs = (dirs_only[-1],)
+                start = L - (args.max_depth - 1)
+                target_subdirs = tuple(dirs_only[start:])
 
         outdir = dst.joinpath(*target_subdirs)
         outdir.mkdir(parents=True, exist_ok=True)
